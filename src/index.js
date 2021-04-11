@@ -24,7 +24,7 @@ function update() {
 
 function restart() {
     state = Array(m).fill().map(() => Array(9).fill())
-    path = [{...first}]
+    path = [{i: first_i, j: first_j}]
 }
 
 function draw_() {
