@@ -23,7 +23,7 @@ function update() {
 }
 
 function restart() {
-    state = Array(m).fill().map(() => Array(9).fill())
+    state = Array(m).fill().map(() => Array(n).fill())
     path = [{i: first_i, j: first_j}]
 }
 
