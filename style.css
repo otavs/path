@@ -1,0 +1,27 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+canvas {
+    position: absolute;
+}
+
+.buttonRestart {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #008CBA;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.buttonRestart:hover {
+    background-color: #008CBA;
+    color: white;
+}
