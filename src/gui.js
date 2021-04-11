@@ -36,7 +36,7 @@ function createGUI() {
     gui.abortRenderingController.__li.hidden = true
     add(window, 'downloadScreenshot').name('Take Screenshot')
 
-    // gui.close()
+    gui.close()
     return gui
 
     function setFolder(name) {

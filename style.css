@@ -25,3 +25,7 @@ canvas {
     background-color: #008CBA;
     color: white;
 }
+
+.dg {
+    z-index: 2 !important;
+}
