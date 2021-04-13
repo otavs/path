@@ -86,11 +86,27 @@ function isColorCompatible() {
 }
 
 function isForbidden() {
+    const firstR = reflectOverY(first)
+    const lastR = reflectOverY(last)
     return (
-        m == 1 && !(first.j == 0 && last.j == n-1) ||
+        m == 1 && !(first.j == 0 && last.j == n-1 || first.j == n-1 && last.j == 0) ||
+        n == 1 && !(first.i == 0 && last.i == m-1 || first.i == m-1 && last.i == 0) ||
+
         m == 2 && first.j == last.j && first.j != 0 && first.j != n-1 ||
-        m == 3 && n % 2 == 0 && vertexColor(first) == 1 && vertexColor(last) == 0 && (first.j < last.j - 1 || first.i == 1 && first.j < last.j)
+        n == 2 && first.i == last.i && first.i != 0 && first.i != m-1 ||
+
+        m == 3 && n % 2 == 0 && vertexColor(first) == 1 && vertexColor(last) == 0 && (first.j < last.j - 1 || first.i == 1 && first.j < last.j) ||
+        m == 3 && n % 2 == 0 && vertexColor(firstR) == 1 && vertexColor(lastR) == 0 && (firstR.j < lastR.j - 1 || firstR.i == 1 && firstR.j < lastR.j) ||
+        n == 3 && m % 2 == 0 && vertexColor(first) == 1 && vertexColor(last) == 0 && (first.i < last.i - 1 || first.j == 1 && first.i < last.i) ||
+        n == 3 && m % 2 == 0 && vertexColor(firstR) == 1 && vertexColor(lastR) == 0 && (firstR.i < lastR.i - 1 || firstR.j == 1 && firstR.i < lastR.i)
     )
+}
+
+function reflectOverY({i, j}) {
+    return {
+        i: m-1-i,
+        j: n-1-j 
+    }
 }
 
 function canGoTo(i, j) {
