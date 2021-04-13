@@ -3,14 +3,17 @@ function createGUI() {
     let folder = gui
 
     // add(window, 'restart').name('Restart')
-    add(window, 'first_i', 0, 9, 1).name('First x').listen().onChange(restart)
-    add(window, 'first_j', 0, 9, 1).name('First y').listen().onChange(restart)
-    add(window, 'last_i', 0, 9, 1).name('Last x').listen().onChange(restart)
-    add(window, 'last_j', 0, 9, 1).name('Last y').listen().onChange(restart)
+    add(first, 'j', 0, 9, 1).name('First x').listen().onChange(restart)
+    add(first, 'i', 0, 9, 1).name('First y').listen().onChange(restart)
+    add(last, 'j', 0, 9, 1).name('Last x').listen().onChange(restart)
+    add(last, 'i', 0, 9, 1).name('Last y').listen().onChange(restart)
     
-    setFolder('Params')
-    add(window, 'm', 1, 10, 1).name('Width').onChange(restart)
-    add(window, 'n', 1, 10, 1).name('Height').onChange(restart)
+    setFolder('Grid Size')
+    add(window, 'n', 1, 10, 1).name('Width').onChange(restart)
+    add(window, 'm', 1, 10, 1).name('Height').onChange(restart)
+
+    setFolder('Color')
+    add(window, 'showVertexColors').name('Coloration')
 
     setFolder('Stats')
     add(window, 'showStats').name('Show Stats').onChange(() => stats.domElement.style.display = showStats ? 'block' : 'none')
