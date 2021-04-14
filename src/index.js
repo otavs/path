@@ -24,7 +24,7 @@ function update() {
         for(let j = 0; j < n; j++) {
             const {x, y} = coords(i, j)
             const isMouseOver = mouseIsPressed && dist(x, y, mouseX, mouseY) < radius
-            if(isMouseOver && canGoTo(i, j)) {
+            if(isMouseOver && canGoTo(i, j) && !(path.length != gridSize()-1 && i == last.i && j == last.j)) {
                 state[i][j] = 1
                 if(!path.find(c => c.i == i && c.j == j))
                     path.push({i, j})
@@ -118,9 +118,9 @@ function isForbidden() {
         m == 2 && first.j == last.j && first.j != 0 && first.j != n-1 ||
         n == 2 && first.i == last.i && first.i != 0 && first.i != m-1 ||
 
-        m == 3 && n % 2 == 0 && vertexColor(first) == 1 && vertexColor(last) == 0 && (first.j < last.j - 1 || first.i == 1 && first.j < last.j) ||
+        m == 3 && n % 2 == 0 && vertexColor(first ) == 1 && vertexColor(last ) == 0 && (first.j  < last.j  - 1 || first.i  == 1 && first.j  < last.j ) ||
         m == 3 && n % 2 == 0 && vertexColor(firstR) == 1 && vertexColor(lastR) == 0 && (firstR.j < lastR.j - 1 || firstR.i == 1 && firstR.j < lastR.j) ||
-        n == 3 && m % 2 == 0 && vertexColor(first) == 1 && vertexColor(last) == 0 && (first.i < last.i - 1 || first.j == 1 && first.i < last.i) ||
+        n == 3 && m % 2 == 0 && vertexColor(first ) == 1 && vertexColor(last ) == 0 && (first.i  < last.i  - 1 || first.j  == 1 && first.i  < last.i ) ||
         n == 3 && m % 2 == 0 && vertexColor(firstR) == 1 && vertexColor(lastR) == 0 && (firstR.i < lastR.i - 1 || firstR.j == 1 && firstR.i < lastR.i)
     )
 }
