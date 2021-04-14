@@ -1,4 +1,4 @@
-var nPoints = 3, m = 5, n = 5, gap, radius, state = [], path = [], showVertexColors = false
+var m = 5, n = 5, gap, radius, state = [], path = [], showVertexColors = false
 first = {i: 0, j: 0}, last = {i: 0, j: 3},
 bgColor = '#fffdc7'
 
