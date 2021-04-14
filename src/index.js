@@ -1,8 +1,14 @@
 var nPoints = 3, m = 5, n = 5, gap, radius, state = [], path = [], showVertexColors = false
-first = {i: 0, j: 0}, last = {i: 0, j: 3}
+first = {i: 0, j: 0}, last = {i: 0, j: 3},
+bgColor = '#fffdc7'
 
 function setup_() {
     restart()
+}
+
+function restart() {
+    state = Array(m).fill().map(() => Array(n).fill())
+    path = []
 }
 
 function update() {
@@ -14,56 +20,73 @@ function update() {
     if(last.j > n-1) last.j = n-1
     if(first.i < 0) first.i = 0
     if(first.j < 0) first.j = 0
-    document.getElementById('isPossible').innerHTML = isPossible()
-}
-
-function restart() {
-    state = Array(m).fill().map(() => Array(n).fill())
-    path = [{...first}]
-}
-
-function draw_() {
-    update()
-    background('#fffdc7')
     for(let i = 0; i < m; i++) {
         for(let j = 0; j < n; j++) {
-            let x = (width - (2*radius + gap) * n + gap)/2 + radius + (2*radius + gap) * j
-            let y = (height - (2*radius + gap) * m + gap)/2 + radius + (2*radius + gap) * i
-            strokeWeight(5)
-            if(path.find((c, idx) => c.i == i && c.j == j && path[idx+1]?.j == j+1 && path[idx+1]?.i  == i))
-                line(x + radius, y, x + radius + gap, y)
-            if(path.find((c, idx) => c.i == i && c.j == j && path[idx+1]?.i == i+1 && path[idx+1]?.j  == j))
-                line(x, y + radius, x, y +  radius + gap)
-            if(path.find((c, idx) => c.i == i && c.j == j && path[idx-1]?.j == j+1 && path[idx-1]?.i  == i))
-                line(x + radius, y, x + radius + gap, y)
-            if(path.find((c, idx) => c.i == i && c.j == j && path[idx-1]?.i == i+1 && path[idx-1]?.j  == j))
-                line(x, y + radius, x, y +  radius + gap)
-            if(mouseIsPressed && dist(x, y, mouseX, mouseY) < radius && !(i == first.i && j == first.j) && canGoTo(i, j) && !(i == last.i && j == last.j && path.length != gridSize() - 1)) {
+            const {x, y} = coords(i, j)
+            const isMouseOver = mouseIsPressed && dist(x, y, mouseX, mouseY) < radius
+            if(isMouseOver && canGoTo(i, j)) {
                 state[i][j] = 1
                 if(!path.find(c => c.i == i && c.j == j))
                     path.push({i, j})
             }
-            fill(!showVertexColors ? '#FFFFFF' : vertexColor({i, j}) ? '#ffc7c7' : '#c7eaff')
-            if(i == first.i && j == first.j)
-                fill('#000000')
-            else if(i == last.i && j == last.j && path.length != gridSize()-1)
-                fill('#000000')
-            else if(dist(x, y, mouseX, mouseY) < radius && !showVertexColors) {
-                if(canGoTo(i, j))
-                    fill('#e6f7ff')
-                else
-                    fill('#ffe8e8')
-            }
-            if(state[i][j])
-                fill('#616161')
-            strokeWeight(1)
-            circle(x, y, radius * 2)
-            if(i == first.i && j == first.j) {
-                fill('#FFFFFF')
-                circle(x, y, radius * 2 / 18)
-            }
         }
     }
+    document.getElementById('isPossible').innerHTML = isPossible()
+}
+
+function draw_() {
+    update()
+    background(bgColor)
+    drawCircles()
+    drawLines()
+}
+
+function drawCircles() {
+    for(let i = 0; i < m; i++) {
+        for(let j = 0; j < n; j++) {
+            drawCircle(i, j)
+        }
+    }
+}
+
+function drawCircle(i, j) {
+    push()
+    const {x, y} = coords(i, j)
+    const isMouseOver = dist(x, y, mouseX, mouseY) < radius
+    let circleColor = !showVertexColors ? '#FFFFFF' : vertexColor({i, j}) ? '#ffc7c7' : '#c7eaff'
+    if(!state[i][j] && isMouseOver && !showVertexColors)
+        circleColor = canGoTo(i, j) ? '#e6f7ff' : '#ffe8e8'
+    if(i == first.i && j == first.j && !isMouseOver || i == last.i && j == last.j && path.length != gridSize()-1)
+        circleColor = '#000000'
+    if(state[i][j])
+        circleColor = '#616161'
+    fill(circleColor)
+    circle(x, y, radius * 2)
+    if(i == first.i && j == first.j && !state[i][j]) {
+        fill('#FFFFFF')
+        circle(x, y, radius * 2 / 20)
+    }
+    pop()
+}
+
+function drawLines() {
+    push()
+    strokeWeight(5)
+    path.forEach(({i, j}, idx) => {
+        const next = path[idx+1]
+        if(!next) 
+            return
+        const {x, y} = coords(i, j)
+        if(next.j == j+1 && next.i  == i)
+            line(x + radius, y, x + radius + gap, y)
+        if(next.i == i+1 && next.j  == j)
+            line(x, y + radius, x, y +  radius + gap)
+        if(next.j == j-1 && next.i  == i)
+            line(x - radius, y, x - radius - gap, y)
+        if(next.i == i-1 && next.j  == j)
+            line(x, y - radius, x, y - radius - gap)
+    })
+    pop()
 }
 
 function gridSize() {
@@ -109,9 +132,16 @@ function reflectOverY({i, j}) {
     }
 }
 
+function coords(i, j) {
+    return {
+        x: (width - (2*radius + gap) * n + gap)/2 + radius + (2*radius + gap) * j,
+        y: (height - (2*radius + gap) * m + gap)/2 + radius + (2*radius + gap) * i
+    }
+}
+
 function canGoTo(i, j) {
     if(path.length == 0)
-        return false
+        return i == first.i && j == first.j
     const i_ = path[path.length-1].i
     const j_ = path[path.length-1].j
     return (
